@@ -14,7 +14,7 @@ export const WebSocketProvider = ({children}) => {
         let heartBeat = 0;
         const connectToWebSocket = () => {
 
-            ws.current = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
+            ws.current = new WebSocket(`${import.meta.env.VITE_APP_WS_URL}`);
 
             const authObject = {
                 "action": "auth",

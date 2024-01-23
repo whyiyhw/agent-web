@@ -1,10 +1,10 @@
-import React from "react";
-import logo from '../image/01.jpeg';
-import loginImage from "../image/login.jpg"
+import {useState} from "react";
+import logo from '../assets/01.jpeg';
+import loginImage from "../assets/login.jpg"
 
 const MainContent = () => {
     // 聊天消息
-    const [messages] = React.useState([
+    const [messages] = useState([
         {
             id: 1,
             title: "7x24-实时聊天",
@@ -68,7 +68,7 @@ const MainContent = () => {
     ]);
 
     // 时间线
-    const [timeline] = React.useState([
+    const [timeline] = useState([
         {
             id: 1,
             time: "2023-02-12",

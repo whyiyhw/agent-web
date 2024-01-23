@@ -1,14 +1,14 @@
 import BotCard from "./BotCard";
-import React, {startTransition, useEffect, useState} from "react";
+import {startTransition, useEffect, useState} from "react";
 import {botReplicate, exploreBotList} from "../api/api";
 import ReactPaginate from "react-paginate";
-import {BOTS} from "../routes/app/routes";
+import {BOTS} from "../routes/app/routes.jsx";
 import {useNavigate} from "react-router-dom";
 
 const ExploreBotList = () => {
     // useEffect 调用 botList 来重新加载 listItems
     const navigate = useNavigate();
-    const [listItems, setListItems] = React.useState([]);
+    const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
     const [pageNumber] = useState(9);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
@@ -31,7 +31,7 @@ const ExploreBotList = () => {
     useEffect(toGetData, [page, pageNumber]);
 
     const goBotReplicate = (id) => {
-        botReplicate(id,2).then(r => {
+        botReplicate(id, 2).then(r => {
             if (r.code === 200) {
                 // 跳转至 bots
                 startTransition(() => {
@@ -42,7 +42,7 @@ const ExploreBotList = () => {
     }
 
     return (
-        <div className="h-screen w-11/12  text-base-content ">
+        <div className="min-h-screen w-11/12 p-0 m-0  text-base-content">
             <header className="flex justify-between items-center p-5 ">
                 <h1 className="text-2xl">Explore</h1>
             </header>
@@ -67,7 +67,7 @@ const ExploreBotList = () => {
 
 const List = ({items, goBotReplicate}) => {
     return (
-        <section className="flex flex-wrap">
+        <section className="flex flex-wrap w-11/12 flex-grow h-1/2">
             {items.map((item, index) => (
                 <BotCard id={item.id}
                          title={item.key}

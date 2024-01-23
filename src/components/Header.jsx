@@ -1,17 +1,17 @@
-import React, {useContext, useTransition} from "react";
+import {useContext, useEffect, useState, useTransition} from "react";
 import {useNavigate} from 'react-router-dom';
-
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSun, faMoon} from '@fortawesome/free-solid-svg-icons';
-import {faGithub} from '@fortawesome/free-brands-svg-icons'
+import {GithubIcon, Sun, Moon} from 'lucide-react';
 import {AuthContext} from "../context/AuthContext";
-import logo from '../image/01.jpeg';
-import loginImage from "../image/login.jpg"
-import {EXPLORE, GITHUB, HOME, LOGIN} from "../routes/app/routes";
+import logo from '../assets/01.jpeg';
+import loginImage from "../assets/login.jpg"
+import {EXPLORE, GITHUB, HOME, LOGIN} from "../routes/app/routes.jsx";
+import {SocketContext} from "@/context/SocketContext.jsx";
+import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
 
 const Header = () => {
     const navigate = useNavigate();
     const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+    const ws = useContext(SocketContext);
     let [, startTransition] = useTransition();
     const handleLoginClick = () => {
         startTransition(() => {
@@ -25,7 +25,7 @@ const Header = () => {
         });
     };
 
-    const [theme, setTheme] = React.useState('light');
+    const [theme, setTheme] = useState('light');
 
     const toggleTheme = () => {
         if (theme === 'light') {
@@ -56,15 +56,16 @@ const Header = () => {
 
     return (
         <div className=" w-full p-3 shadow-sm">
-            <nav className="container mx-auto flex flex-wrap items-center justify-between">
-                <div className="w-full md:w-auto order-last md:order-first flex items-center">
+            <nav className="container mx-auto flex flex-row items-center justify-between">
+                <div className="w-full md:w-auto order-last  flex items-center">
                     {/*加入logo logo 应当与 h1 在同一行 logo 透明度为0.5*/}
-                    <img className="w-10 h-10 rounded opacity-75 " src={loginImage} alt="logo"/>
+                    <img className="w-10 h-10 rounded opacity-80  " src={loginImage} alt="logo"/>
                     <h1 className="text-3xl font-bold" onClick={handleHomeClick}>chatgpt-wechat</h1>
 
                 </div>
                 <div
-                    className="text-base-content mt-8 md:mt-0 order-first md:order-last md:flex flex-wrap space-y-2 md:space-y-0 md:space-x-2  items-center justify-between">
+                    className="text-base-content mt-8 md:mt-0 order-first md:order-last flex flex-row
+                    space-y-2 md:space-y-0 md:space-x-2  items-center justify-between">
                     {!isLoggedIn &&
                         <button className="btn btn-outline  btn-circle" onClick={handleLoginClick}>Log in</button>}
                     {isLoggedIn &&
@@ -86,11 +87,12 @@ const Header = () => {
                         </div>
                     }
                     <div onClick={jumpGithub}>
-                        <FontAwesomeIcon icon={faGithub}/>
+                        <GithubIcon size={20}/>
                     </div>
                     <div onClick={toggleTheme}>
-                        <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun}/>
+                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                     </div>
+                    <WebSocketStatus/>
                 </div>
             </nav>
         </div>

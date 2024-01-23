@@ -1,10 +1,10 @@
 import {useNavigate} from "react-router-dom";
-import React, {useTransition} from "react";
-import defaultBotIcon2 from "../image/default_bot_icon2.png";
-import defaultBotIcon3 from "../image/default_bot_icon3.png";
-import defaultBotIcon4 from "../image/default_bot_icon4.png";
-import defaultBotIcon6 from "../image/default_bot_icon6.png";
-import {BOT_DEVELOP} from "../routes/app/routes";
+import {useTransition} from "react";
+import defaultBotIcon2 from "../assets/default_bot_icon2.png";
+import defaultBotIcon3 from "../assets/default_bot_icon3.png";
+import defaultBotIcon4 from "../assets/default_bot_icon4.png";
+import defaultBotIcon6 from "../assets/default_bot_icon6.png";
+import {BOT_DEVELOP} from "../routes/app/routes.jsx";
 
 
 const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, showBotModal}) => {
@@ -29,7 +29,7 @@ const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, s
         })
     }
     return (
-        <div className="w-96 h-36 flex flex-row shadow hover:shadow-2xl m-2.5 rounded-3xl ">
+        <div className="w-1/7 h-1/4 flex flex-row shadow hover:shadow-2xl m-2.5 rounded-xl ">
             <div className="p-3">
                 <div className="w-16 rounded-full  overflow-hidden h-16">
                     <img

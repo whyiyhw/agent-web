@@ -1,16 +1,27 @@
-import React, {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {SocketContext} from "../context/SocketContext";
 import {botPromptUpdate} from "../api/api";
+import {AlertContext} from "../context/AlertContext.jsx";
+import PropTypes from "prop-types";
+import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
+
 
 const BotPromptOptimize = ({hideBotModal, botId, activeMessageId}) => {
-    const {current: ws} = useContext(SocketContext);
+    const ws = useContext(SocketContext);
     const [prompt, setPrompt] = useState("")
     const [disableSubmit, setDisableSubmit] = useState(true)
-
+    const {showAlert, hideAlert} = useContext(AlertContext);
 
     useEffect(() => {
+        if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+            showAlert("websocket 连接异常,请刷新后再试", "error");
+            setTimeout(() => {
+                hideAlert()
+            }, 2000)
+            return
+        }
         let allMessage = "";
-        ws.onmessage = (e) => {
+        ws.current.onmessage = (e) => {
             console.log("Receive message: " + e.data);
             /**
              * @type{{code: number, data: {message_id: string, message: string, msg_type: string}, message: string}}
@@ -32,7 +43,12 @@ const BotPromptOptimize = ({hideBotModal, botId, activeMessageId}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         botPromptUpdate(botId, prompt).then(res => {
-            console.log(res)
+            if (res.code !== 200) {
+                showAlert("优化建议提交失败:" + res.msg, "error");
+                setTimeout(() => {
+                    hideAlert()
+                }, 2000)
+            }
             hideBotModal(true)
         }, error => {
             console.log(error)
@@ -43,7 +59,12 @@ const BotPromptOptimize = ({hideBotModal, botId, activeMessageId}) => {
         <dialog id="my_modal_1" className={"modal modal-open "}>
             <div className="modal-box  w-1/3 max-w-5xl h-2/3 ">
                 <form onSubmit={handleSubmit} className="w-full  h-full max-w-lg mx-auto mt-5  ">
-                    <div className="text-xl font-bold pb-3 ">Prompt Optimization</div>
+                    <div className="text-xl font-bold pb-3 ">
+                        <span>
+                            提示词优化
+                        </span>
+                        <WebSocketStatus/>
+                    </div>
                     <textarea
                         className="bg-white appearance-none  bg-transparent   flex-1 w-full h-3/4 outline-none border-none overflow-auto"
                         value={prompt}
@@ -63,5 +84,11 @@ const BotPromptOptimize = ({hideBotModal, botId, activeMessageId}) => {
         </dialog>
     );
 }
+
+BotPromptOptimize.propTypes = {
+    hideBotModal: PropTypes.func,
+    botId: PropTypes.number,
+    activeMessageId: PropTypes.string
+};
 
 export default BotPromptOptimize;

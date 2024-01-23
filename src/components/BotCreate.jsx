@@ -1,10 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {botCreate, botDetail, botUpdate} from "../api/api";
 import {AlertContext} from "../context/AlertContext";
-import defaultBotIcon3 from "../image/default_bot_icon3.png";
-import defaultBotIcon2 from "../image/default_bot_icon2.png";
-import defaultBotIcon4 from "../image/default_bot_icon4.png";
-import defaultBotIcon6 from "../image/default_bot_icon6.png";
+import defaultBotIcon3 from "../assets/default_bot_icon3.png";
+import defaultBotIcon2 from "../assets/default_bot_icon2.png";
+import defaultBotIcon4 from "../assets/default_bot_icon4.png";
+import defaultBotIcon6 from "../assets/default_bot_icon6.png";
+import PropTypes from "prop-types";
 
 const BotCreate = ({hideBotModal, botId}) => {
     const [botIdState, setBotId] = useState(0);
@@ -111,6 +112,18 @@ const BotCreate = ({hideBotModal, botId}) => {
         return map[Math.floor(Math.random() * 4) + 1];
     }
 
+    function handleClickChangeAvatar() {
+        const map = {
+            '1': defaultBotIcon2,
+            '2': defaultBotIcon3,
+            '3': defaultBotIcon4,
+            '4': defaultBotIcon6
+        }
+        let avatar = map[Math.floor(Math.random() * 4) + 1]
+        setAvatar(avatar);
+        setAvatarURL(avatar);
+    }
+
     return (
         <dialog id="my_modal" className={"modal modal-open"}>
             <div className="modal-box">
@@ -142,7 +155,8 @@ const BotCreate = ({hideBotModal, botId}) => {
                             {/*       onChange={avatarChangeHandler}*/}
                             {/*/>*/}
                             <img src={getAvatarURL()} alt="avatar preview"
-                                 className={"w-16 rounded-full  overflow-hidden h-16"}/>
+                                 className={"w-16 rounded-full  overflow-hidden h-16"}
+                                 onClick={handleClickChangeAvatar}/>
                         </div>
                     </div>
                     <div className="flex flex-wrap -mx-3 mb-2">
@@ -171,5 +185,10 @@ const BotCreate = ({hideBotModal, botId}) => {
         </dialog>
     );
 }
+
+BotCreate.propTypes = {
+    hideBotModal: PropTypes.func.isRequired,
+    botId: PropTypes.number.isRequired
+};
 
 export default BotCreate;

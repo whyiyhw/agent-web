@@ -1,11 +1,10 @@
-import React, {lazy} from 'react';
 import {useRoutes} from 'react-router-dom';
-import Layout from "../../pages/Layout";
-import BotList from "../../components/BotList";
-import BotDevelop from "../../components/BotDevelop";
-import ExploreBotList from "../../components/ExploreList";
-import BotPublish from "../../components/BotPublish";
-
+import {lazy} from "react";
+const Layout = lazy(() => import("../../pages/Layout"));
+const BotList = lazy(() => import("../../components/BotList"));
+const BotDevelop = lazy(() => import("../../components/BotDevelop"));
+const ExploreBotList = lazy(() => import("../../components/ExploreList"));
+const BotPublish = lazy(() => import("../../components/BotPublish"));
 
 export const HOME = "/";
 export const EXPLORE = "/explore";

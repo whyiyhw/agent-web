@@ -1,8 +1,8 @@
-import React, {startTransition, useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState, useTransition} from 'react';
 import {botCustomerBind, botCustomerList} from "../api/api";
 import {AlertContext} from "../context/AlertContext";
-import {useLocation} from "react-router-dom";
-import {BOTS_PUBLISH} from "../routes/app/routes";
+import {useLocation, useNavigate} from "react-router-dom";
+import BaseChat from "@/components/BaseChat.jsx";
 
 function ChannelOneContent({botId}) {
     const [users, setUsers] = useState([])
@@ -35,7 +35,8 @@ function ChannelOneContent({botId}) {
                     <div className="flex-grow">
                         <h2 className="text-lg font-semibold">{user.name}</h2>
                     </div>
-                    <button className="btn btn-primary" onClick={() => publishBot(user.open_kf_id)}>发布</button>
+                    <button className="btn btn-xs btn-primary ml-5" onClick={() => publishBot(user.open_kf_id)}>发布
+                    </button>
                 </div>
             ))}
         </div>
@@ -44,17 +45,25 @@ function ChannelOneContent({botId}) {
 
 function PublishPage() {
     const [activeTab, setActiveTab] = useState('channel1');
-
+    const navigate = useNavigate();
+    let [, startTransition] = useTransition();
     // 从 location 中取id
     let location = useLocation()
     const botId = location.state.id
     console.log(botId)
+    const jumpToWeb = () => {
+        startTransition(() => {
+            navigate("/chat?botId=" + botId);
+        });
+    }
     const renderChannel = () => {
         switch (activeTab) {
             case 'channel1':
                 return <ChannelOneContent botId={botId}/>;
             case 'channel2':
-                return <div>web端...</div>;
+                return <div>
+                    <button className="btn btn-xl btn-primary ml-5" onClick={jumpToWeb}>jump to web</button>
+                </div>;
             case 'channel3':
                 return <div>...</div>;
             default:

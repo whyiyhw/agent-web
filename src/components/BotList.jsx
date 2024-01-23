@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import ReactPaginate from 'react-paginate';
 import {botList, botCreate, botDelete} from "../api/api";
 import BotCreate from "./BotCreate";
@@ -6,7 +6,7 @@ import BotCard from "./BotCard";
 
 const BotList = () => {
     // useEffect 调用 botList 来重新加载 listItems
-    const [listItems, setListItems] = React.useState([]);
+    const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
     const [pageNumber] = useState(9);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
@@ -65,7 +65,7 @@ const BotList = () => {
     }
 
     return (
-        <div className="h-screen w-11/12  text-base-content ">
+        <div className="min-h-screen w-11/12 p-0 m-0  text-base-content">
             <header className="flex justify-between items-center p-5 ">
                 <h1 className="text-2xl">Bots</h1>
                 <button className="btn" onClick={() => showBotModal(0)}>创建 Bot
@@ -82,11 +82,11 @@ const BotList = () => {
                 pageCount={pageCount}
                 onPageChange={handlePageClick}
                 containerClassName={"flex justify-end space-x-2 mt-4"}
-                pageLinkClassName={"btn btn-circle "}
-                disabledClassName={"btn-disabled "}
-                activeClassName={"btn-circle "}
-                previousClassName={"btn btn-circle "}
-                nextClassName={"btn btn-circle "}
+                pageLinkClassName={"btn btn-circle"}
+                disabledClassName={"btn-disabled"}
+                activeClassName={"btn-circle"}
+                previousClassName={"btn btn-circle"}
+                nextClassName={"btn btn-circle"}
             />}
         </div>
     );
@@ -95,7 +95,7 @@ const BotList = () => {
 
 const List = ({items, toBotDelete, goBotReplicate, showBotModal}) => {
     return (
-        <section className="flex flex-wrap">
+        <section className="flex flex-wrap w-11/12 flex-grow h-1/2">
             {items.map((item, index) => (
                 <BotCard id={item.id}
                          title={item.name}

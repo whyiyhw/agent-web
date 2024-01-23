@@ -6,7 +6,7 @@
  */
 export async function userLogin(email, password) {
     const response = await commonFetch(
-        `${process.env.REACT_APP_API_URL}/api/user/login`,
+        `${import.meta.env.VITE_APP_API_URL}/api/user/login`,
         'POST',
         {email: email, password: password}
     )
@@ -23,7 +23,7 @@ export async function userLogin(email, password) {
  */
 export async function botCreate(name, avatar, desc) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/create`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/create`,
         'POST',
         {name: name, avatar: avatar, desc: desc},
     )
@@ -34,7 +34,7 @@ export async function botCreate(name, avatar, desc) {
 // botReplicate
 export async function botReplicate(botId, origin_type) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/replicate`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/replicate`,
         'POST',
         {id: botId, origin_type: origin_type},
     )
@@ -52,7 +52,7 @@ export async function botReplicate(botId, origin_type) {
  */
 export async function botUpdate(botId, name, avatar, desc) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/update`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/update`,
         'POST',
         {id: botId, name: name, avatar: avatar, desc: desc},
     )
@@ -68,7 +68,7 @@ export async function botUpdate(botId, name, avatar, desc) {
  */
 export async function botPromptUpdate(botId, prompt) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/prompt/update`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/prompt/update`,
         'POST',
         {id: botId, prompt: prompt},
     )
@@ -84,7 +84,7 @@ export async function botPromptUpdate(botId, prompt) {
  */
 export async function botChat(botId, message) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/chat`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/chat`,
         'POST',
         {bot_id: botId, msg: message}
     )
@@ -99,7 +99,7 @@ export async function botChat(botId, message) {
  */
 export async function botChatHistory(botId) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/chat/history`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/chat/history`,
         'POST',
         {bot_id: botId}
     )
@@ -114,7 +114,7 @@ export async function botChatHistory(botId) {
  */
 export async function botChatHistoryClear(botId) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/chat/history/clear`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/chat/history/clear`,
         'POST',
         {bot_id: botId}
     )
@@ -131,7 +131,7 @@ export async function botChatHistoryClear(botId) {
 export async function botList(page, pageSize) {
 
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/list`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/list`,
         'POST',
         {page: page, page_size: pageSize}
     )
@@ -147,7 +147,7 @@ export async function botList(page, pageSize) {
 export async function botDelete(botId) {
 
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/delete`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/delete`,
         'POST',
         {id: botId}
     )
@@ -163,7 +163,7 @@ export async function botDelete(botId) {
 export async function botDetail(botId) {
 
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/detail`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/detail`,
         'POST',
         {id: botId}
     )
@@ -180,7 +180,7 @@ export async function botDetail(botId) {
 export async function exploreBotList(page, pageSize) {
 
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/explore/list`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/explore/list`,
         'POST',
         {page: page, page_size: pageSize}
     )
@@ -198,7 +198,7 @@ export async function exploreBotList(page, pageSize) {
 export async function botOptimizePrompt(botId, prompt) {
 
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/prompt/optimize`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/prompt/optimize`,
         'POST',
         {id: botId, prompt: prompt}
     )
@@ -214,7 +214,7 @@ export async function botOptimizePrompt(botId, prompt) {
  */
 export async function botCustomerList(page, pageSize) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/customer/list`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/customer/list`,
         'POST',
         {page: page, page_size: pageSize}
     )
@@ -225,9 +225,41 @@ export async function botCustomerList(page, pageSize) {
 //客户机器人绑定
 export async function botCustomerBind(botId, openKfId) {
     const response = await commonFetchWithToken(
-        `${process.env.REACT_APP_API_URL}/api/bot/customer/update`,
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/customer/update`,
         'POST',
         {bot_id: botId, open_kfid: openKfId}
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 获取机器人模型详情
+ * @param botId
+ * @returns {Promise<{code:int, msg:string, data:{model_type:string, model_name:string, temperature:float}}|null>}
+ */
+export async function botModelDetail(botId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/model/detail`,
+        'POST',
+        {bot_id: botId}
+    )
+
+    return commonResponseProcess(response);
+}
+/**
+ * 更新机器人模型
+ * @param botId
+ * @param modelType
+ * @param modelName
+ * @param temperature
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function botModelUpdate(botId, modelType, modelName, temperature) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/bot/model/update`,
+        'POST',
+        {bot_id: botId, model_type: modelType, model_name: modelName, temperature: temperature}
     )
 
     return commonResponseProcess(response);

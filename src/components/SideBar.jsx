@@ -1,13 +1,11 @@
 import React, {startTransition, useContext} from 'react'
-import 'daisyui/dist/full.css'
-import loginImage from "../image/login.jpg";
-import logo from "../image/01.jpeg";
+import loginImage from "../assets/login.jpg";
+import logo from "../assets/01.jpeg";
 import {AuthContext} from "../context/AuthContext";
 import {useNavigate} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGithub} from "@fortawesome/free-brands-svg-icons";
-import {faMoon, faSun, faRobot, faCodeMerge, faBookBookmark, faKitchenSet} from "@fortawesome/free-solid-svg-icons";
-import {BOTS, GITHUB, HOME} from "../routes/app/routes";
+import {Moon, Sun, GithubIcon, BotIcon, CodeIcon, BookMarkedIcon, SettingsIcon, AnchorIcon} from "lucide-react";
+import {BOTS, EXPLORE, GITHUB, HOME} from "../routes/app/routes";
+import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
 
 const SideBar = () => {
     const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
@@ -15,33 +13,40 @@ const SideBar = () => {
 
     const menuItems = [
         {
-            icon: faRobot,
+            icon: <BotIcon/>,
             text: 'Bots',
             clickEvent: () => startTransition(() => {
                 navigate(BOTS)
             })
         },
         {
-            icon: faCodeMerge,
+            icon: <CodeIcon/>,
             text: '插件',
             clickEvent: () => startTransition(() => {
                 navigate(BOTS)
             })
         },
         {
-            icon: faBookBookmark,
+            icon: <BookMarkedIcon/>,
             text: '知识库',
             clickEvent: () => startTransition(() => {
                 navigate(BOTS)
             })
         },
         {
-            icon: faKitchenSet,
+            icon: <SettingsIcon/>,
             text: '设置',
             clickEvent: () => startTransition(() => {
                 navigate(BOTS)
             })
         },
+        {
+            icon: <AnchorIcon/>,
+            text: "探索",
+            clickEvent: () => startTransition(() => {
+                navigate(EXPLORE)
+            })
+        }
     ];
 
     const handleLogoutClick = () => {
@@ -69,28 +74,27 @@ const SideBar = () => {
     };
 
     return (
-        <div className="h-screen w-1/12  text-base-content  border-r-2 ">
-            <header className="p-4  flex justify-center items-center ">
+        <div className="flex flex-col min-h-screen border-r-2 w-1/12 text-base-content">
+            <header className="p-4 flex justify-center h-1/8 items-center">
                 <img className="w-10 h-10 rounded" src={loginImage} alt="logo"/>
             </header>
-            <nav>
-                <ul className="menu  rounded-box">
+            <nav className="flex-grow h-3/4 overflow-y-auto">
+                <ul className="menu rounded-box">
                     {menuItems.map((item, index) => (
-                        <li key={index}>
+                        <li key={index} >
                             <button onClick={item.clickEvent}>
-                                <FontAwesomeIcon icon={item.icon}/>
+                                {item.icon}
                                 {item.text}
                             </button>
                         </li>
                     ))}
                 </ul>
             </nav>
-
             {isLoggedIn &&
-                <footer className="fixed bottom-10 w-1/12  flex justify-evenly ">
+                <footer className="mt-auto pb-10 pl-2 flex flex-row h-1/8">
                     <div className="dropdown dropdown-right dropdown-end">
                         <img
-                            className="w-10 h-10 rounded-full border-2 border-blue-500 right-10 " tabIndex={0}
+                            className="w-10 h-10 rounded-full border-2 border-blue-500 right-10" tabIndex={0}
                             role="button"
                             src={logo}
                             alt="avatar"
@@ -101,14 +105,14 @@ const SideBar = () => {
                                 <button onClick={handleLogoutClick}>登出</button>
                             </li>
                         </ul>
-
                     </div>
-                    <button onClick={jumpGithub} className="w-0.5 p-0 m-0">
-                        <FontAwesomeIcon icon={faGithub}/>
+                    <button onClick={jumpGithub}>
+                        <GithubIcon/>
                     </button>
                     <button onClick={toggleTheme}>
-                        <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun}/>
+                        {theme === 'light' ? <Moon size={20}/> : <Sun size={20}/>}
                     </button>
+                    <WebSocketStatus/>
                 </footer>
             }
         </div>

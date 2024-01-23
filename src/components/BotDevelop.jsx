@@ -1,15 +1,15 @@
-import React, {startTransition, useContext, useEffect, useState} from 'react';
+import {startTransition, useContext, useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {botChat, botChatHistory, botChatHistoryClear, botDetail, botOptimizePrompt, botPromptUpdate} from "../api/api";
 import {AuthContext} from "../context/AuthContext";
-import {BOTS, BOTS_PUBLISH} from "../routes/app/routes";
+import {BOTS, BOTS_PUBLISH} from "../routes/app/routes.jsx";
 import {AlertContext} from "../context/AlertContext";
 import {SocketContext} from "../context/SocketContext";
 import BotPromptOptimize from "./BotPromptOptimize";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faTimes, faPaperPlane, faPaperclip, faDeleteLeft} from '@fortawesome/free-solid-svg-icons';
-import ReactMarkdown from 'react-markdown'
-import retypeHighlight from 'rehype-highlight'
+import {Timer, Paperclip, Newspaper, Delete} from "lucide-react"
+import Markdown from "./Markdown.jsx";
+import BotModelSetting from "./BotModelSetting.jsx";
+import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
 
 const BotDevelop = () => {
     const {isLoggedIn,} = useContext(AuthContext);
@@ -17,15 +17,18 @@ const BotDevelop = () => {
     const location = useLocation();
     const id = location.state.id;
     const {showAlert, hideAlert} = useContext(AlertContext);
-    const {current: ws} = useContext(SocketContext);
+    const ws = useContext(SocketContext);
 
-    const [prompt, setPrompt] = React.useState("");
-    const [avatar, setAvatar] = React.useState("");
-    const [name, setName] = React.useState("");
-    const [botId,] = React.useState(id);
+    const [prompt, setPrompt] = useState("");
+    const [avatar, setAvatar] = useState("");
+    const [name, setName] = useState("");
+    const [botId,] = useState(id);
 
     const [isModalOpen, setIsModalOpen] = useState(false);  // 声明 modal 的 state
     const [activeMessageId, setActiveMessageId] = useState('');  // 声明 modal 监听的 message
+
+    // const chatObject = {req: "", resp: ""};
+    const [chatInfo, setChatInfo] = useState([]);
 
     const hideBotModal = (isRefresh = false) => {
         setIsModalOpen(false);
@@ -35,8 +38,10 @@ const BotDevelop = () => {
     }
 
     const OptimizePrompt = () => {
+        console.log(prompt,prompt.length)
         if (prompt.length <= 0) {
             showAlert("请输入优化建议", "error")
+            console.log("请输入优化建议")
             setTimeout(() => {
                 hideAlert()
             }, 2000)
@@ -64,16 +69,24 @@ const BotDevelop = () => {
         })
         botChatHistory(botId).then(res => {
             let chatInfo = [];
-            res.data.list.forEach((item) => {
-                if (item.role === "user") {
-                    chatInfo = [...chatInfo, {req: item.content.data, resp: ""}];
-                } else {
-                    chatInfo[chatInfo.length - 1].resp = item.content.data;
-                }
-            })
+            if (res.data.list) {
+                res.data.list.forEach((item) => {
+                    if (item.role === "system") {
+                        return
+                    }
+                    if (item.role === "user") {
+                        chatInfo = [...chatInfo, {req: item.content.data, resp: ""}];
+                    } else {
+                        chatInfo[chatInfo.length - 1].resp = item.content.data;
+                    }
+                })
+            }
             setChatInfo([...chatInfo]);
         })
     }
+
+    // 使用ref记住滚动区域
+    const messagesEndRef = useRef();
 
     // 初始化时 通过 id 获取信息
     useEffect(() => {
@@ -83,6 +96,14 @@ const BotDevelop = () => {
         getData()
     }, [id, isLoggedIn]);
 
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            console.log("scroll")
+            console.log(messagesEndRef.current)
+            messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+        }
+    }, [chatInfo]);
+
     const jumpToBots = () => {
         startTransition(() => {
             navigate(BOTS);
@@ -91,7 +112,12 @@ const BotDevelop = () => {
 
     const handleOnBlur = () => {
         botPromptUpdate(botId, prompt).then(res => {
-            console.log(res)
+            if (res.code !== 200) {
+                showAlert("优化建议提交失败:" + res.msg, "error");
+                setTimeout(() => {
+                    hideAlert()
+                }, 2000)
+            }
         }, error => {
             console.log(error)
         })
@@ -101,7 +127,13 @@ const BotDevelop = () => {
     const [text, setText] = useState('');
 
     const handleChange = (e) => {
-        setText(e.target.value);
+        let text = e.target.value.trim();
+        setText(text);
+        e.target.style.height = 'auto';  // 先将高度设置为auto，确保内容增多时，高度能够自动扩展
+        e.target.style.height = `${e.target.scrollHeight}px`;  // 然后设置高度为scrollHeight，这样即使内容减少，高度也不会收缩
+        if (!e.target.value) {
+            e.target.style.height = '40px';  // 这是一行的高度，你可以根据实际情况进行调整
+        }
     };
     const handleKeyDown = (e) => {
         if (e.keyCode === 13) {
@@ -124,8 +156,6 @@ const BotDevelop = () => {
         })
     };
 
-    // const chatObject = {req: "", resp: ""};
-    const [chatInfo, setChatInfo] = useState([]);
 
     const handleSend = () => {
         //这里处理发送消息的逻辑
@@ -133,8 +163,15 @@ const BotDevelop = () => {
         setChatInfo([...chatInfo, newChatObject]);
         botChat(botId, text).then(res => {
             if (res.code === 200) {
+                if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+                    showAlert("websocket 连接异常,请刷新后再试", "error");
+                    setTimeout(() => {
+                        hideAlert()
+                    }, 2000)
+                    return
+                }
                 let allMessage = "";
-                ws.onmessage = (e) => {
+                ws.current.onmessage = (e) => {
                     console.log("Receive message: " + e.data);
                     /**
                      * @type{{code: number, data: {message_id: string, message: string, msg_type: string}, message: string}}
@@ -169,6 +206,11 @@ const BotDevelop = () => {
         })
     }
 
+    const [isModelModalOpen, setIsModelModalOpen] = useState(false);  // 声明 modal 的 state
+    const hideBotModelModal = () => {
+        setIsModelModalOpen(false);
+    }
+
     return (
         <div className="h-screen flex flex-col">
             <header className="h-20 bg-gray-50 shadow-md flex items-center justify-start px-5 py-6 z-50">
@@ -187,6 +229,7 @@ const BotDevelop = () => {
                 <div className="text-xl font-bold">
                     {name}
                 </div>
+                <WebSocketStatus/>
                 <div className="flex-grow"></div>
                 <button className="btn btn-primary" onClick={handlePublish}>发布</button>
             </header>
@@ -195,7 +238,7 @@ const BotDevelop = () => {
                 <section className="w-2/3 bg-gray-50 h-full flex">
 
                     <div className="w-1/2 flex flex-col justify-center items-center bg-white shadow-md h-full">
-                        <div
+                    <div
                             className={"w-full flex justify-start items-center text-xl font-bold bg-gray-50 border-b-2 border-b-gray-200 h-1/10"}>
                             <div className={"text-base-content w-full h-full pl-5 pt-3 pb-3 pr-5"}>Develop</div>
                         </div>
@@ -207,7 +250,7 @@ const BotDevelop = () => {
                                 <button
                                     className="pl-7 pr-7 text-sm font-bold  text-primary btn-ghost justify-end"
                                     onClick={OptimizePrompt}>
-                                    Optimize
+                                    提示词优化
                                 </button>
                                 {isModalOpen && <BotPromptOptimize hideBotModal={hideBotModal} botId={botId}
                                                                    activeMessageId={activeMessageId}/>}
@@ -225,7 +268,10 @@ const BotDevelop = () => {
                     <div className="w-1/2 float-end text-base-content">
                         <div
                             className={"w-full flex text-right items-center text-xl font-bold bg-gray-50 border-b-2 border-b-gray-200 h-1/10"}>
-                            <div className={" w-full h-full pr-5 pl-5 pt-3 pb-3"}>Gemini</div>
+                            <div className={" w-full h-full pr-5 pl-5 pt-3 pb-3 font-bold  text-primary hover:bg-gray-200 cursor-pointer"}
+                                 onClick={() => setIsModelModalOpen(true)}>Model 设置
+                            </div>
+                            {isModelModalOpen && <BotModelSetting hideBotModelModal={hideBotModelModal} botId={botId}/>}
                         </div>
                         <div className="w-full h-1/20 flex flex-col border-b-2 border-b-gray-200">
                             <div className={"w-full h-full pr-3 pl-3 pt-1 pb-1"}>Skills</div>
@@ -238,74 +284,79 @@ const BotDevelop = () => {
                         <div className={"w-full h-full px-5 py-3"}>Preview</div>
                     </div>
 
-                        <div className="h-4/5 flex flex-col-reverse  overflow-y-scroll relative">
-                            {/*删除图标 移入时显示*/}
-                            {
-                                chatInfo.length > 0 &&
-                                <button className="w-1/8 flex text-error absolute z-10  right-0 bottom-0"
-                                        onClick={handleClear}
-                                >
-                                    <FontAwesomeIcon icon={faDeleteLeft}/>
-                                </button>
-                            }
-
-                            <div className={"w-full  flex flex-col overflow-x-hidden"}>
-                                {
-                                    chatInfo.map((chat, index) => {
-
-                                        const reqChat = chat.req ? (
-                                            <div className="chat chat-end">
-                                                <div className="chat-bubble chat-bubble-accent">{chat.req}</div>
-                                            </div>
-                                        ) : null;
-
-                                        const respChat = chat.resp ? (
-                                            <div className="chat chat-start">
-                                                <div className="chat-bubble overflow-x-scroll animate-typing ">
-                                                    <ReactMarkdown
-                                                        rehypePlugins={[retypeHighlight]}>{chat.resp}</ReactMarkdown>
-                                                </div>
-                                            </div>
-                                        ) : null;
-
-                                        return (
-                                            <>
-                                                {reqChat}
-                                                {respChat}
-                                            </>
-                                        );
-                                    })
-                                }
-
-                            </div>
-                        </div>
-
-                        <div className="h-1/10 w-full flex flex-row  pt-2 float-end pb-5 items-center">
-                            <button className="w-1/8 flex px-2" onClick={() => setText('')}>
-                                <FontAwesomeIcon icon={faTimes}/>
+                    <div className="h-4/5 flex flex-col-reverse  overflow-y-scroll relative">
+                        {/*删除图标 移入时显示*/}
+                        {
+                            chatInfo.length > 0 &&
+                            <button className="w-1/8 flex text-error absolute z-10  right-0 bottom-0"
+                                    onClick={handleClear}
+                            >
+                                <Delete/>
                             </button>
-                            <div
-                                className="border-2 border-gray-100  w-full flex flex-row items-center hover:border-primary rounded-xl">
+                        }
+
+                        <div className={"w-full  flex flex-col overflow-x-hidden"}>
+                            {
+                                chatInfo.map((chat) => {
+
+                                    const reqChat = chat.req ? (
+                                        <div className="chat chat-end ">
+                                            <div className="chat-bubble">
+                                                <Markdown text={chat.req} inversion={false} asRawText={true}
+                                                          error={false} loading={false}/>
+                                            </div>
+                                        </div>
+                                    ) : null;
+
+                                    const respChat = chat.resp ? (
+                                        <div className="chat chat-start">
+                                            <div className="chat-bubble   ">
+                                                <Markdown text={chat.resp} inversion={false} asRawText={false}
+                                                          error={false} loading={false}/>
+                                            </div>
+                                        </div>
+                                    ) : null;
+
+                                    return (
+                                        <>
+                                            {reqChat}
+                                            {respChat}
+                                        </>
+                                    );
+                                })
+                            }
+                            {/* 在这添加一个ref，使其在每次添加新的消息后滚动到这个元素位置 */}
+                            <div ref={messagesEndRef}/>
+                        </div>
+                    </div>
+
+                    <div className="h-1/10 w-full flex flex-row  pt-2 float-end pb-5 items-center">
+                        <button className="w-1/8 flex px-2" onClick={() => setText('')}>
+                            <Timer/>
+                        </button>
+                        <div
+                            className="border-2 border-gray-100  w-full flex flex-row items-center hover:border-primary rounded-xl">
                             <textarea
-                                className="appearance-none  bg-transparent w-full leading-tight focus:outline-none overflow-hidden resize-none border-none py-2 px-5"
+                                className="appearance-none  bg-transparent w-full leading-tight focus:outline-none  resize-none border-none  px-5"
                                 value={text}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
+                                style={{height: 'auto', maxHeight: '200px'}}
                             />
-                                <button className="btn btn-sm btn-ghost flex px-2 hover:shadow-xl"
-                                        onClick={handleSend}>
-                                    <FontAwesomeIcon icon={faPaperPlane}/>
-                                </button>
-                            </div>
-                            <button className="w-1/8 flex px-2"
-                                    onClick={handleUpload}>
-                                <FontAwesomeIcon icon={faPaperclip}/>
+                            <button className="btn btn-sm btn-ghost flex px-2 hover:shadow-xl"
+                                    onClick={handleSend}>
+                                <Newspaper/>
                             </button>
                         </div>
+                        <button className="w-1/8 flex px-2"
+                                onClick={handleUpload}>
+                            <Paperclip/>
+                        </button>
+                    </div>
                 </section>
             </main>
         </div>
-);
+    );
 }
 
 export default BotDevelop;
