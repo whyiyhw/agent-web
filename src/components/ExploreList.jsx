@@ -10,7 +10,7 @@ const ExploreBotList = () => {
     const navigate = useNavigate();
     const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
-    const [pageNumber] = useState(9);                       // 假设你已经定义了这个
+    const [pageNumber] = useState(10);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
 
     function handlePageClick({selected: selectedPage}) {
@@ -67,7 +67,7 @@ const ExploreBotList = () => {
 
 const List = ({items, goBotReplicate}) => {
     return (
-        <section className="flex flex-wrap w-11/12 flex-grow h-1/2">
+        <section className="flex flex-wrap w-full  flex-grow h-3/5">
             {items.map((item, index) => (
                 <BotCard id={item.id}
                          title={item.key}

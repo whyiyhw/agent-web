@@ -247,6 +247,7 @@ export async function botModelDetail(botId) {
 
     return commonResponseProcess(response);
 }
+
 /**
  * 更新机器人模型
  * @param botId
@@ -264,6 +265,230 @@ export async function botModelUpdate(botId, modelType, modelName, temperature) {
 
     return commonResponseProcess(response);
 }
+
+/**
+ * 创建知识库
+ * @param name
+ * @param avatar
+ * @param desc
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{id:int}}>}
+ */
+export async function knowledgeCreate(name, avatar, desc) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/create`,
+        'POST',
+        {name: name, avatar: avatar, desc: desc},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 更新知识库
+ * @param knowledgeId
+ * @param name
+ * @param avatar
+ * @param desc
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{}}>}
+ */
+export async function knowledgeUpdate(knowledgeId, name, avatar, desc) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/update`,
+        'POST',
+        {id: knowledgeId, name: name, avatar: avatar, desc: desc},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 删除知识库
+ * @param knowledgeId
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{}}>}
+ */
+export async function knowledgeDelete(knowledgeId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/delete`,
+        'POST',
+        {id: knowledgeId},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 知识库列表
+ * @param page
+ * @param pageSize
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{
+ * total:int, list:[
+ *  {id:int, name:string, avatar:string, desc:string, create_time:string, update_time:string}
+ * ]}}>}
+ */
+export async function knowledgeList(page, pageSize) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/list`,
+        'POST',
+        {page: page, page_size: pageSize},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 创建知识单元
+ * @param knowledgeId
+ * @param name
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{id:int}}>}
+ */
+export async function knowledgeUnitCreate(knowledgeId, name) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/create`,
+        'POST',
+        {knowledge_id: knowledgeId, name: name},
+    )
+
+    return commonResponseProcess(response);
+}
+//knowledgeUnitUpdate
+export async function knowledgeUnitUpdate(unitId, name) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/update`,
+        'POST',
+        {id: unitId, name: name},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 知识单元列表
+ * @param knowledgeId
+ * @param page
+ * @param pageSize
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeUnitList(knowledgeId, page, pageSize) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/list`,
+        'POST',
+        {knowledge_id: knowledgeId, page: page, page_size: pageSize},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 知识单元详情
+ * @param unitId
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeUnitDetail(unitId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/detail`,
+        'POST',
+        {id: unitId},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 删除知识单元
+ * @param unitId
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeUnitDelete(unitId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/delete`,
+        'POST',
+        {id: unitId},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 知识单元切换
+ * @param unitId
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeUnitSwitch(unitId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/unit/switch`,
+        'POST',
+        {id: unitId},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 创建知识片段
+ * @param knowledgeId
+ * @param knowledgeUnitId
+ * @param value
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeSegmentCreate(knowledgeId, knowledgeUnitId, value) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/segments/create`,
+        'POST',
+        {knowledge_id: knowledgeId, knowledge_unit_id: knowledgeUnitId, value: value},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 更新知识片段
+ * @param segmentId
+ * @param value
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function knowledgeSegmentUpdate(segmentId, value) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/segments/update`,
+        'POST',
+        {id: segmentId, value: value},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 获取知识片段列表
+ * @param knowledgeId
+ * @param knowledgeUnitId
+ * @param page
+ * @param pageSize
+ * @returns {Promise<null|any|undefined>}
+ */
+export async function getKnowledgeSegmentList(knowledgeId, knowledgeUnitId, page, pageSize) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/segments/list`,
+        'POST',
+        {knowledge_id: knowledgeId, knowledge_unit_id: knowledgeUnitId, page: page, page_size: pageSize},
+    )
+
+    return commonResponseProcess(response);
+}
+
+/**
+ * 删除知识片段
+ * @param segmentId
+ * @returns {Promise<null|any|undefined|{code:int, msg:string, data:{}}>}
+ */
+export async function knowledgeSegmentDelete(segmentId) {
+    const response = await commonFetchWithToken(
+        `${import.meta.env.VITE_APP_API_URL}/api/knowledge/segments/delete`,
+        'POST',
+        {id: segmentId},
+    )
+
+    return commonResponseProcess(response);
+}
+
 
 function commonFetch(url, method, body) {
     return fetch(url, {

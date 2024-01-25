@@ -20,7 +20,7 @@ const BaseChat = () => {
     const botId = parseInt(new URLSearchParams(window.location.search).get("botId"));
 
     const handleChange = (event) => {
-        let text = event.target.value.trim();
+        let text = event.target.value.trimStart();
         setText(text);
     }
 
@@ -71,8 +71,6 @@ const BaseChat = () => {
     const messagesEndRef = useRef();
     useEffect(() => {
         if (messagesEndRef.current) {
-            console.log("scroll")
-            console.log(messagesEndRef.current)
             messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
         }
     }, [chatInfo]);

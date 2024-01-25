@@ -11,4 +11,4 @@
 ### `npm run build`
 - 正式环境
 - 修改 .env 文件中的配置, 改为对应项目的IP
-- Builds the app for production to the `build` folder.\
+- Builds the app for production to the `dist` folder.\

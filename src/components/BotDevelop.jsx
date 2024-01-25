@@ -127,7 +127,7 @@ const BotDevelop = () => {
     const [text, setText] = useState('');
 
     const handleChange = (e) => {
-        let text = e.target.value.trim();
+        let text = e.target.value.trimStart();
         setText(text);
         e.target.style.height = 'auto';  // 先将高度设置为auto，确保内容增多时，高度能够自动扩展
         e.target.style.height = `${e.target.scrollHeight}px`;  // 然后设置高度为scrollHeight，这样即使内容减少，高度也不会收缩

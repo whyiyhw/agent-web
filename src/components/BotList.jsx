@@ -3,12 +3,13 @@ import ReactPaginate from 'react-paginate';
 import {botList, botCreate, botDelete} from "../api/api";
 import BotCreate from "./BotCreate";
 import BotCard from "./BotCard";
+import PropTypes from "prop-types";
 
 const BotList = () => {
     // useEffect 调用 botList 来重新加载 listItems
     const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
-    const [pageNumber] = useState(9);                       // 假设你已经定义了这个
+    const [pageNumber] = useState(10);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
     const [isModalOpen, setIsModalOpen] = useState(false);  // 声明 modal 的 state
     const [activeBotId, setActiveBotId] = useState(0);      // 声明 activeBotId 的 state
@@ -68,7 +69,7 @@ const BotList = () => {
         <div className="min-h-screen w-11/12 p-0 m-0  text-base-content">
             <header className="flex justify-between items-center p-5 ">
                 <h1 className="text-2xl">Bots</h1>
-                <button className="btn" onClick={() => showBotModal(0)}>创建 Bot
+                <button className="btn btn-primary" onClick={() => showBotModal(0)}>创建 Bot
                 </button>
                 {isModalOpen && <BotCreate hideBotModal={hideBotModal} botId={activeBotId}/>}
             </header>
@@ -95,7 +96,7 @@ const BotList = () => {
 
 const List = ({items, toBotDelete, goBotReplicate, showBotModal}) => {
     return (
-        <section className="flex flex-wrap w-11/12 flex-grow h-1/2">
+        <section className="flex flex-wrap w-full flex-grow h-3/4">
             {items.map((item, index) => (
                 <BotCard id={item.id}
                          title={item.name}
@@ -110,7 +111,14 @@ const List = ({items, toBotDelete, goBotReplicate, showBotModal}) => {
         </section>
     );
 };
-List.propTypes = {};
+
+List.propTypes = {
+    items: PropTypes.array.isRequired,
+    toBotDelete: PropTypes.func.isRequired,
+    goBotReplicate: PropTypes.func.isRequired,
+    showBotModal: PropTypes.func.isRequired,
+};
+
 BotList.propTypes = {};
 
 export default BotList;

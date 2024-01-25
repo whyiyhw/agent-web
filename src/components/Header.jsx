@@ -1,17 +1,15 @@
-import {useContext, useEffect, useState, useTransition} from "react";
+import {useContext, useState, useTransition} from "react";
 import {useNavigate} from 'react-router-dom';
 import {GithubIcon, Sun, Moon} from 'lucide-react';
 import {AuthContext} from "../context/AuthContext";
 import logo from '../assets/01.jpeg';
 import loginImage from "../assets/login.jpg"
 import {EXPLORE, GITHUB, HOME, LOGIN} from "../routes/app/routes.jsx";
-import {SocketContext} from "@/context/SocketContext.jsx";
 import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
 
 const Header = () => {
-    const navigate = useNavigate();
     const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
-    const ws = useContext(SocketContext);
+    const navigate = useNavigate();
     let [, startTransition] = useTransition();
     const handleLoginClick = () => {
         startTransition(() => {

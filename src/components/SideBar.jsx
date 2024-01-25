@@ -4,7 +4,7 @@ import logo from "../assets/01.jpeg";
 import {AuthContext} from "../context/AuthContext";
 import {useNavigate} from "react-router-dom";
 import {Moon, Sun, GithubIcon, BotIcon, CodeIcon, BookMarkedIcon, SettingsIcon, AnchorIcon} from "lucide-react";
-import {BOTS, EXPLORE, GITHUB, HOME} from "../routes/app/routes";
+import {BOTS, EXPLORE, GITHUB, HOME, KNOWLEDGE} from "../routes/app/routes";
 import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
 
 const SideBar = () => {
@@ -30,7 +30,7 @@ const SideBar = () => {
             icon: <BookMarkedIcon/>,
             text: '知识库',
             clickEvent: () => startTransition(() => {
-                navigate(BOTS)
+                navigate(KNOWLEDGE)
             })
         },
         {
