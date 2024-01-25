@@ -78,19 +78,23 @@ const BaseChat = () => {
     const handleSend = () => {
         //这里处理发送消息的逻辑
         // 去除 text 前后 空格
-        let newChatObject = {req: text, resp: ""};
+        if (text.trim() === "") {
+            showAlert("发送消息不能为空", "error");
+            return
+        }
+        //如何获取最新的 ws
+        if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+            showAlert("websocket 连接异常,请刷新后再试", "error");
+            setTimeout(() => {
+                hideAlert()
+            }, 2000)
+            return
+        }
+        let txt = text.trim();
+        let newChatObject = {req: txt, resp: ""};
         setChatInfo([...chatInfo, newChatObject]);
-        botChat(botId, text).then(res => {
+        botChat(botId, txt).then(res => {
             if (res.code === 200) {
-                //如何获取最新的 ws
-                if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-                    showAlert("websocket 连接异常,请刷新后再试", "error");
-                    setTimeout(() => {
-                        hideAlert()
-                    }, 2000)
-                    return
-                }
-
                 let allMessage = "";
                 ws.current.onmessage = (e) => {
                     console.log("Receive message: " + e.data);
@@ -156,7 +160,23 @@ const BaseChat = () => {
                               error={false} loading={false}/>
                 </div>
             </div>
-        ) : null;
+        ) : (
+            // 展示加载中的动画
+            <div className="chat chat-start pl-2">
+                <div className="chat-image avatar">
+                    <div className="w-10 rounded-full">
+                        <img src={avatar ?? "https://picsum.photos/200/300"} alt="" className="w-10 h-10 rounded-full"/>
+                    </div>
+                </div>
+                <div className="chat-bubble opacity-80">
+                    <div className="flex items-center justify center">
+                        <div className="w-10 h-10">
+                            <span className="loading loading-dots loading-md"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
 
         return (
             <>

@@ -5,11 +5,11 @@ import {AuthContext} from "../context/AuthContext";
 import {BOTS, BOTS_PUBLISH} from "../routes/app/routes.jsx";
 import {AlertContext} from "../context/AlertContext";
 import {SocketContext} from "../context/SocketContext";
-import BotPromptOptimize from "./BotPromptOptimize";
 import {Timer, Paperclip, Newspaper, Delete} from "lucide-react"
 import Markdown from "./Markdown.jsx";
-import BotModelSetting from "./BotModelSetting.jsx";
-import WebSocketStatus from "@/components/common/WebSocketStatus.jsx";
+import BotModelSetting from "@/components/BotModelSetting";
+import BotPromptOptimize from "@/components/BotPromptOptimize";
+import WebSocketStatus from "@/components/common/WebSocketStatus";
 
 const BotDevelop = () => {
     const {isLoggedIn,} = useContext(AuthContext);
@@ -301,7 +301,7 @@ const BotDevelop = () => {
 
                                     const reqChat = chat.req ? (
                                         <div className="chat chat-end ">
-                                            <div className="chat-bubble">
+                                            <div className="chat-bubble chat-bubble-info opacity-50">
                                                 <Markdown text={chat.req} inversion={false} asRawText={true}
                                                           error={false} loading={false}/>
                                             </div>
@@ -310,12 +310,22 @@ const BotDevelop = () => {
 
                                     const respChat = chat.resp ? (
                                         <div className="chat chat-start">
-                                            <div className="chat-bubble   ">
+                                            <div className="chat-bubble opacity-80">
                                                 <Markdown text={chat.resp} inversion={false} asRawText={false}
                                                           error={false} loading={false}/>
                                             </div>
                                         </div>
-                                    ) : null;
+                                    ) :
+                                        // 展示加载中的动画
+                                        <div className="chat chat-start">
+                                            <div className="chat-bubble opacity-80">
+                                                <div className="flex items-center justify center">
+                                                    <div className="w-10 h-10">
+                                                        <span className="loading loading-dots loading-md"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>;
 
                                     return (
                                         <>

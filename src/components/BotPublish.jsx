@@ -1,8 +1,8 @@
 import {useContext, useEffect, useState, useTransition} from 'react';
+import {useLocation, useNavigate} from "react-router-dom";
 import {botCustomerBind, botCustomerList} from "../api/api";
 import {AlertContext} from "../context/AlertContext";
-import {useLocation, useNavigate} from "react-router-dom";
-import BaseChat from "@/components/BaseChat.jsx";
+import QRCode from 'qrcode.react';
 
 function ChannelOneContent({botId}) {
     const [users, setUsers] = useState([])
@@ -47,22 +47,37 @@ function PublishPage() {
     const [activeTab, setActiveTab] = useState('channel1');
     const navigate = useNavigate();
     let [, startTransition] = useTransition();
+    const {showAlert, hideAlert} = useContext(AlertContext);
+
     // 从 location 中取id
     let location = useLocation()
     const botId = location.state.id
-    console.log(botId)
+    const webAppUrl = `${import.meta.env.VITE_APP_URL}/chat?botId=${botId}`;
+
     const jumpToWeb = () => {
         startTransition(() => {
             navigate("/chat?botId=" + botId);
         });
     }
+    const  copyUrl = () => {
+        navigator.clipboard.writeText(webAppUrl).then(() => {
+            showAlert('复制成功', 'success');
+            setTimeout(() => {
+                hideAlert();
+            }, 2000);
+        })
+    }
     const renderChannel = () => {
         switch (activeTab) {
-            case 'channel1':
-                return <ChannelOneContent botId={botId}/>;
             case 'channel2':
-                return <div>
-                    <button className="btn btn-xl btn-primary ml-5" onClick={jumpToWeb}>jump to web</button>
+                return <ChannelOneContent botId={botId}/>;
+            case 'channel1':
+                return <div className="flex flex-row items-center justify-center space-y-4">
+                    <QRCode value={webAppUrl}/>
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                        <button className="btn btn-md btn-ghost btn-outline ml-5" onClick={jumpToWeb}>跳转至对话页面</button>
+                        <button className="btn btn-md btn-ghost btn-outline ml-5" onClick={copyUrl}>复制链接</button>
+                    </div>
                 </div>;
             case 'channel3':
                 return <div>...</div>;
@@ -73,10 +88,17 @@ function PublishPage() {
 
     return (
         <div className="flex flex-col items-center justify-center w-full h-full pt-40 space-y-4">
-            <div className="flex space-x-4 mb-4">
-                <button onClick={() => setActiveTab('channel1')} className="btn btn-outline">企业微信客服</button>
-                <button onClick={() => setActiveTab('channel2')} className="btn btn-outline">web端</button>
-                <button onClick={() => setActiveTab('channel3')} className="btn btn-outline">...</button>
+            <div role="tablist" className="tabs tabs-lifted tabs-lg">
+                <a
+                    role="tab" className={activeTab === "channel1" ? "tab tab-active" : "tab"}
+                    onClick={() => setActiveTab('channel1')}
+                >web端</a>
+                <a role="tab" className={activeTab === "channel2" ? "tab tab-active" : "tab"}
+                     onClick={() => setActiveTab('channel2')}
+                >企业微信客服</a>
+                <a role="tab" className={activeTab === "channel3" ? "tab tab-active" : "tab"}
+                        onClick={() => setActiveTab('channel3')}
+                >...</a>
             </div>
             <div>
                 {renderChannel()}
