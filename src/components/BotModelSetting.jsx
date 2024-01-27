@@ -14,7 +14,10 @@ const BotModelModal = ({hideBotModelModal, botId}) => {
     const [temperature, setTemperature] = useState("0.7");
     const {showAlert, hideAlert} = useContext(AlertContext);
 
-    const handleModelChange = event => setSelectedModel(event.target.value);
+    const handleModelChange = event => {
+        setSelectedModel(event.target.value);
+        setSelectedModelName(modelServices[event.target.value][0]);
+    };
     const handleModelNameChange = event => setSelectedModelName(event.target.value);
     const handleTempChange = event => {
         // 截断保留两位小数，避免出现0.7000000000000001
