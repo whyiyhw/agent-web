@@ -1,16 +1,17 @@
-import BotCard from "./BotCard";
 import {startTransition, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {botReplicate, exploreBotList} from "../api/api";
 import ReactPaginate from "react-paginate";
 import {BOTS} from "../routes/app/routes.jsx";
-import {useNavigate} from "react-router-dom";
+import BotCard from "./BotCard";
+import PropTypes from "prop-types";
 
 const ExploreBotList = () => {
     // useEffect 调用 botList 来重新加载 listItems
     const navigate = useNavigate();
     const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
-    const [pageNumber] = useState(10);                       // 假设你已经定义了这个
+    const [pageNumber] = useState(16);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
 
     function handlePageClick({selected: selectedPage}) {
@@ -42,8 +43,8 @@ const ExploreBotList = () => {
     }
 
     return (
-        <div className="min-h-screen w-11/12 p-0 m-0  text-base-content">
-            <header className="flex justify-between items-center p-5 ">
+        <div className="h-screen w-11/12 p-0 m-0">
+            <header className="flex justify-between items-center m-5">
                 <h1 className="text-2xl">Explore</h1>
             </header>
 
@@ -67,7 +68,7 @@ const ExploreBotList = () => {
 
 const List = ({items, goBotReplicate}) => {
     return (
-        <section className="flex flex-wrap w-full  flex-grow h-3/5">
+        <section className="flex flex-wrap w-11/12  flex-grow h-4/5">
             {items.map((item, index) => (
                 <BotCard id={item.id}
                          title={item.key}
@@ -79,4 +80,8 @@ const List = ({items, goBotReplicate}) => {
     );
 };
 
+List.propTypes = {
+    items: PropTypes.array.isRequired,
+    goBotReplicate: PropTypes.func.isRequired,
+}
 export default ExploreBotList;

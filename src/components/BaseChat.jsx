@@ -187,8 +187,11 @@ const BaseChat = () => {
     })
 
     return (
-        <div className="h-screen w-screen flex flex-col justify-between">
-            <div className="h-4/5 w-2/3 p-3 mx-auto shadow-xl rounded-xl  overflow-auto border  m-10">
+        <div className="h-screen w-screen flex flex-col  items-center justify-center">
+            <div className="
+            sm:w-full md:w-2/3 lg:w-2/3
+            sm:h-full md:h-4/5 lg:h-4/5
+            shadow-xl rounded-xl overflow-auto border border-gray-100 ">
                 {/* 固定悬空*/}
                 <header className="w-full h-1/10">
                     <div className="navbar bg-base-100">
@@ -223,7 +226,7 @@ const BaseChat = () => {
                         className="rounded-full shadow-inner hover:shadow p-2 w-10 h-10 flex items-center justify-center ml-3 text-red-600">
                         <XCircle onClick={handleClear}/>
                     </button>
-                    <textarea className="border rounded-lg p-2 w-full" rows="2"
+                    <textarea className="border rounded-lg p-2 w-4/5 mr-5" rows="2"
                               onChange={handleChange}
                               onKeyDown={handleKeyDown}
                               value={text}

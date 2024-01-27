@@ -1,5 +1,8 @@
 import {createContext, useState} from 'react';
 import PropTypes from "prop-types";
+import {
+    AlertCircle,
+} from "lucide-react";
 
 export const AlertContext = createContext({});
 
@@ -17,11 +20,11 @@ export const AlertProvider = ({children}) => {
     return (
         <AlertContext.Provider value={{alert, showAlert, hideAlert}}>
             {alert.isOpen ? (
-                <div className="toast  toast-center toast-middle opacity-75">
-                    <div className={"alert  alert-" + alert.type}>
-                        <span>{alert.message}</span>
+                    <div className="toast z-9999999999999  toast-top toast-center opacity-80">
+                        <div className={"alert  alert-" + alert.type}>
+                           <AlertCircle/> <span>{alert.message}</span>
+                        </div>
                     </div>
-                </div>
             ) : null}
             {children}
         </AlertContext.Provider>

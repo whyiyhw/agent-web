@@ -53,9 +53,9 @@ const Header = () => {
     }
 
     return (
-        <div className=" w-full p-3 shadow-sm">
-            <nav className="container mx-auto flex flex-row items-center justify-between">
-                <div className="w-full md:w-auto order-last  flex items-center">
+        <div className="w-full p-3 shadow-sm">
+            <nav className="container flex flex-row items-center justify-between">
+                <div className="w-full md:w-auto order-last flex items-center">
                     {/*加入logo logo 应当与 h1 在同一行 logo 透明度为0.5*/}
                     <img className="w-10 h-10 rounded opacity-80  " src={loginImage} alt="logo"/>
                     <h1 className="text-3xl font-bold" onClick={handleHomeClick}>chatgpt-wechat</h1>

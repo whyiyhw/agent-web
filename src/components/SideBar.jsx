@@ -74,7 +74,7 @@ const SideBar = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen border-r-2 w-1/12 text-base-content">
+        <div className="flex flex-col h-screen border-r-2 w-1/12 text-base-content">
             <header className="p-4 flex justify-center h-1/8 items-center">
                 <img className="w-10 h-10 rounded" src={loginImage} alt="logo"/>
             </header>

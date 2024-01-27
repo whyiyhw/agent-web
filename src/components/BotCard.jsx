@@ -5,6 +5,7 @@ import defaultBotIcon3 from "../assets/default_bot_icon3.png";
 import defaultBotIcon4 from "../assets/default_bot_icon4.png";
 import defaultBotIcon6 from "../assets/default_bot_icon6.png";
 import {BOT_DEVELOP} from "../routes/app/routes.jsx";
+import PropTypes from "prop-types";
 
 
 const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, showBotModal}) => {
@@ -29,9 +30,9 @@ const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, s
         })
     }
     return (
-        <div className="w-1/7 h-1/4 flex flex-row shadow hover:shadow-2xl m-2.5 rounded-xl ">
+        <div className="w-64 h-32 flex flex-row shadow hover:shadow-2xl m-2.5 rounded-xl">
             <div className="p-3">
-                <div className="w-16 rounded-full  overflow-hidden h-16">
+                <div className="w-12 h-12 rounded-full  overflow-hidden ">
                     <img
                         src={avatar ? avatar : getAvatarURL()}
                         width="64"
@@ -41,7 +42,9 @@ const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, s
             </div>
             <div className="flex flex-row w-full p-3">
                 <div className="w-2/3" onClick={() => jumpToDevelop(id)}>
-                    <h1 className="card-title">{title}</h1>
+                    <div className="card-title max-w-32 max-h-16 overflow-hidden overflow-ellipsis " title={title}>
+                        { title }
+                    </div>
                     <div className="">{description}</div>
                 </div>
 
@@ -92,5 +95,14 @@ const BotCard = ({id, title, description, avatar, toBotDelete, goBotReplicate, s
     )
 };
 
+BotCard.propTypes = {
+    id: PropTypes.number,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    avatar: PropTypes.string,
+    toBotDelete: PropTypes.func,
+    goBotReplicate: PropTypes.func,
+    showBotModal: PropTypes.func
+};
 
 export default BotCard

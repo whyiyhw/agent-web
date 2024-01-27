@@ -9,7 +9,7 @@ const BotList = () => {
     // useEffect 调用 botList 来重新加载 listItems
     const [listItems, setListItems] = useState([]);
     const [page, setPage] = useState(1);                    // 声明 page 的 state
-    const [pageNumber] = useState(10);                       // 假设你已经定义了这个
+    const [pageNumber] = useState(16);                       // 假设你已经定义了这个
     const [pageCount, setPageCount] = useState(0);          // 假设你已经定义了这个
     const [isModalOpen, setIsModalOpen] = useState(false);  // 声明 modal 的 state
     const [activeBotId, setActiveBotId] = useState(0);      // 声明 activeBotId 的 state

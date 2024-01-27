@@ -14,6 +14,17 @@ export async function userLogin(email, password) {
     return commonResponseProcess(response);
 }
 
+//userRegister
+export async function userRegister(email, password) {
+    const response = await commonFetch(
+        `${import.meta.env.VITE_APP_API_URL}/api/user/register`,
+        'POST',
+        {email: email, name: email, password: password, avatar: "default"}
+    )
+
+    return commonResponseProcess(response);
+}
+
 /**
  * 创建机器人
  * @param name
@@ -350,6 +361,7 @@ export async function knowledgeUnitCreate(knowledgeId, name) {
 
     return commonResponseProcess(response);
 }
+
 //knowledgeUnitUpdate
 export async function knowledgeUnitUpdate(unitId, name) {
     const response = await commonFetchWithToken(
