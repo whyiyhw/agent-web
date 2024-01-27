@@ -5,7 +5,7 @@ import {AlertContext} from "@/context/AlertContext.jsx";
 
 const BotModelModal = ({hideBotModelModal, botId}) => {
     const modelServices = {
-        'openai': ['get-4', 'gpt-3-turbo'],
+        'openai': ['gpt-4', 'gpt-3-turbo'],
         'gemini': ['gemini-pro']
     };
     const [botIdState,] = useState(botId);
